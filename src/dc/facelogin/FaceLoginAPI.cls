@@ -13,8 +13,7 @@ Parameter HandleCorsRequest = 1;
 
 ClassMethod PostFace() As %Status
 {
-    
-    set success = $$$OK
+    Set success = $$$OK
 
     Try {
         Set info = {}
@@ -22,15 +21,33 @@ ClassMethod PostFace() As %Status
         Set username = $GET(%request.Data("username",1))
         Set password = $GET(%request.Data("password",1))
 
-        set success = $SYSTEM.Security.Login(username,password)
+        Set success = $SYSTEM.Security.Login(username,password)
 
         If (success = 1) {
             Set source = %request.GetMimeData("file")
-            Set face = ##class(Face).%New() 
-            Set face.username = username
+            If (source = "") {
+                Set sourceBase64 = %request.Data("file",1)
+                Set b64=$piece(sourceBase64,"base64,", 2)
+                Set binary=$system.Encryption.Base64Decode(b64)
+                Set source = ##class(%Stream.GlobalBinary).%New()
+                Do source.Write(binary)
+            }
+
+            Set sql = "SELECT * FROM dc_facelogin.Face WHERE username = ?"
+            Set tStatement = ##class(%SQL.Statement).%New()
+            Set success = tStatement.%Prepare(sql)
+            If success'= 1 { Write "%Prepare failed:" Do $System.Status.DisplayError(success) Quit }
+            Set rset = tStatement.%Execute($GET(%request.Data("username",1)))
+            If (rset.%Next()) {
+                Set face = ##class(Face).%OpenId(rset.ID) 
+            } Else {
+                Set face = ##class(Face).%New() 
+                Set face.username = username
+            }
+            
             Set success = face.face.CopyFrom(source)
             Set success = face.%Save()
-            
+
             If (success = 1) {    
                 Set info.message = "Face registered successfully"
             } Else {
@@ -57,8 +74,8 @@ ClassMethod PostFace() As %Status
 
 ClassMethod FaceCompare() As %Status
 {
-    
-    set success = $$$OK
+    hang 5
+    set success = $$$OK 
 
     Try {
         Set info = {}
@@ -92,8 +109,15 @@ ClassMethod LoginByFace() As %Status
     
     Set info = {}
     Set source = %request.GetMimeData("file")
-    
-    Set sql = "SELECT * FROM dcfacelogin.Face WHERE username = ?"
+    If (source = "") {
+        Set sourceBase64 = %request.Data("file",1)
+        Set b64=$piece(sourceBase64,"base64,", 2)
+        Set binary=$system.Encryption.Base64Decode(b64)
+        Set source = ##class(%Stream.GlobalBinary).%New()
+        Do source.Write(binary)
+    }
+
+    Set sql = "SELECT * FROM dc_facelogin.Face WHERE username = ?"
     Set tStatement = ##class(%SQL.Statement).%New()
     Set success = tStatement.%Prepare(sql)
     If success'= 1 { Write "%Prepare failed:" Do $System.Status.DisplayError(success) Quit }

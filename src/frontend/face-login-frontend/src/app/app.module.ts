@@ -1,43 +1,28 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
-import { PostfaceComponent } from './postface/postface.component';
-import { FaceloginComponent } from './facelogin/facelogin.component';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatListModule } from '@angular/material/list';
-
-const materialModules = [
-  MatCardModule,
-  MatToolbarModule,
-  MatButtonModule,
-  MatInputModule,
-  MatFormFieldModule,
-  MatProgressBarModule,
-  MatListModule
-];
+import { AppRoutingModule } from './app-routing.module';
+import { AppLayoutModule } from './layout/app.layout.module';
+import { NotfoundComponent } from './facelogin/notfound/notfound.component';
+import { CountryService } from './demo/service/country.service';
+import { EventService } from './demo/service/event.service';
+import { IconService } from './demo/service/icon.service';
+import { NodeService } from './demo/service/node.service';
+import { FaceLoginService } from './demo/service/facelogin.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PostfaceComponent,
-    FaceloginComponent,
-  ],
-  
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ...materialModules
-  ],
-
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent, NotfoundComponent
+    ],
+    imports: [
+        AppRoutingModule,
+        AppLayoutModule
+    ],
+    providers: [
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        CountryService, EventService, IconService, NodeService,
+        FaceLoginService
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
