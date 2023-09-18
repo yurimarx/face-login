@@ -28,3 +28,11 @@ $ docker-compose build
 ```bash
 $ docker-compose up -d
 ```
+
+3. Open this URL in your browser: http://localhost:55038/facelogin/index.html 
+
+4. Select the menu item Compare Faces
+   
+5. Choose 2 different images with the same person face and compare, wait some seconds for a result
+
+6. Now, Choose 2 different images with different persons faces and compare, wait some seconds for a result
