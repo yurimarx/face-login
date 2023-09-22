@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+  <Document name="face-login.ZPM">
+    <Module>
+      <Name>face-login</Name>
+      <Version>1.0.0</Version>
+      <Description>This is an application for face matching and facial login</Description>
+      <Packaging>module</Packaging>
+      <SourcesRoot>src</SourcesRoot>
+      <Resource Name="dc.python.PKG"/>
+      <Resource Name="dc.facelogin.PKG"/>
+      <Resource Name="dc.facelogin.FaceLogin.CLS" Directory="cls"/>
+      <Resource Name="dc.facelogin.SetupUtil.CLS" Directory="cls"/>
+      <Resource Name="ZAUTHENTICATE.MAC" Directory="mac"/>
+      <Invokes>
+        <Invoke Class="dc.facelogin.SetupUtil" Method="Apply">
+          <Arg>/csp/sys</Arg>
+          <Arg>SuperUser</Arg>
+          <Arg>SYS</Arg>
+        </Invoke>
+      </Invokes>
+      <CSPApplication 
+        Url="/csp/facelogin"
+        Recurse="1"
+        MatchRoles=":{$dbrole}"
+        PasswordAuthEnabled="1"
+        UnauthenticatedEnabled="1"
+        DispatchClass="dc.facelogin.FaceLoginAPI"
+        ServeFiles="1"
+        CookiePath="/csp/facelogin"
+        UseCookies="2"
+       />
+       <CSPApplication 
+        CookiePath="/facelogin/" 
+        DefaultTimeout="900" 
+        SourcePath="/src/dist-frontend" 
+        DeployPath="${cspdir}/csp/${namespace}/"
+        MatchRoles=":{$dbrole}" 
+        PasswordAuthEnabled="0" 
+        Recurse="1"
+        ServeFiles="1" 
+        ServeFilesTimeout="3600" 
+        UnauthenticatedEnabled="1" 
+        Url="/facelogin" 
+        UseSessionCookie="2"
+      />
+      <FileCopy Name="python/" Target="${libdir}python/"/>
+      <FileCopy Name="data/" Target="${libdir}data/${packagename}/"/>
+    </Module>
+  </Document>
+</Export>

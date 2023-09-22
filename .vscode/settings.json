@@ -1,42 +1,21 @@
 {
     "files.associations": {
-
+    
         "Dockerfile*": "dockerfile",
         "iris.script": "objectscript"
       },
     "objectscript.conn" :{
-      "ns": "IRISAPP",
-      "username": "SUPERUSER",
+      "active": true,
+      "ns": "%SYS",
+      "username": "_SYSTEM",
       "password": "SYS",
       "docker-compose": {
         "service": "iris",
         "internalPort": 52773
       },
-      "active": true,
       "links": {
-        "FlaskTest": "http://localhost:55030/"
+        "UnitTest Portal": "${serverUrl}/csp/sys/%25UnitTest.Portal.Home.cls?$NAMESPACE=IRISAPP"
       }
-    },
-    "sqltools.connections": [
-      {
-        "namespace": "IRISAPP",
-        "connectionMethod": "Server and Port",
-        "showSystem": false,
-        "previewLimit": 50,
-        "server": "localhost",
-        "port": 55038,
-        "askForPassword": false,
-        "driver": "InterSystems IRIS",
-        "name": "objectscript-docker",
-        "username": "SuperUser",
-        "password": "SYS"
-      }
-    ],
-    "python.pythonPath": "/usr/local/bin/python3",
-    "python.testing.pytestArgs": [
-      "src/python"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    }
 
 }

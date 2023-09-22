@@ -3,12 +3,21 @@
   <Document name="face-login.ZPM">
     <Module>
       <Name>face-login</Name>
-      <Version>1.0.4</Version>
+      <Version>1.0.0</Version>
       <Description>This is an application for face matching and facial login</Description>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
-      <Resource Name="dc.python.PKG"/>
-      <Resource Name="dc.facelogin.PKG"/>
+      <Resource Name="ZAUTHENTICATE.MAC" Directory="mac"/>
+      <Resource Name="dc.facelogin.PKG" Directory="cls"/>
+      <Resource Name="dc.facelogin.FaceLogin.CLS" Directory="cls"/>
+      <Resource Name="dc.facelogin.SetupUtil.CLS" Directory="cls"/>
+      <Invokes>
+        <Invoke Class="dc.facelogin.SetupUtil" Method="Apply">
+          <Arg>/csp/sys</Arg>
+          <Arg>SuperUser</Arg>
+          <Arg>SYS</Arg>
+        </Invoke>
+      </Invokes>
       <CSPApplication 
         Url="/csp/facelogin"
         Recurse="1"
@@ -34,8 +43,6 @@
         Url="/facelogin" 
         UseSessionCookie="2"
       />
-      <FileCopy Name="python/" Target="${libdir}python/"/>
-      <FileCopy Name="data/" Target="${libdir}data/${packagename}/"/>
     </Module>
   </Document>
 </Export>
