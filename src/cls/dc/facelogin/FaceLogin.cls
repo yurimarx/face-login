@@ -19,7 +19,7 @@ ClassMethod OnLoginPage() As %Status
 	Do ..DrawHEAD(tTitle)
 
 	&html<
-		<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="pageLoad();">
+		<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 			<div id="content">
 		>
  
@@ -47,14 +47,9 @@ ClassMethod OnLoginPage() As %Status
 	<tr valign="bottom">
 	<td nowrap class="loginCaption">#(tUserName)#</td>
 	<td>
-		<input type="text" size="30" name="IRISUsername" autocomplete="off" value="#($ZCVT($get(%request.Data("IRISUsername",1)),"O","HTML"))#"/>
+		<input id="username" type="text" size="30" name="IRISUsername" autocomplete="off" value="#($ZCVT($get(%request.Data("IRISUsername",1)),"O","HTML"))#"/>
 	</td>
  	</tr>
-	<tr valign="bottom">
-	<td nowrap class="loginCaption">#(tPassword)#</td>
-	<td><input type="password" size="30" name="IRISPassword" autocomplete="off"/>
-	</td>
-	</tr>
 	<tr><td>&nbsp;</td>
 	 <td><button class="button" id="capture" style="width:120px;">#(tLogin)#</button></td>
 	</tr>
@@ -85,22 +80,22 @@ ClassMethod OnLoginPage() As %Status
 	});
 
 	document.querySelector('#capture').addEventListener('click', function (e) {
-    	var canvas = document.querySelector('#canvas');  
+    	var username = document.querySelector('#username').value;
+		var canvas = document.querySelector('#canvas');  
     	canvas.height = video.videoHeight;
     	canvas.width = video.videoWidth;
 		var context = canvas.getContext('2d');
     	context.drawImage(video, 0, 0);
 		let imageBlob = canvas.toDataURL();
 
-		const file = dataUrlToFile(imageBlob);
+		const file = dataUrlToFile(imageBlob, "file.png");
 
 		let formData = new FormData();
-		formData.append("source", file, "source.png"); 
-		formData.append("target", file, "target.png");
+		formData.append("file", file, "file.png"); 
+		formData.append("username", username);
 
 		compareFaces(formData);
     });	
-		//setCookie('faceImg', canvas.toDataURL());
 	
 	</script>>
 
@@ -151,7 +146,7 @@ ClassMethod DrawHEAD(pTitle = "")
 	}
 	// js functions
 	&html<<script language="javascript">
-
+	
 	function dataUrlToFile(dataurl, filename) {
 		const arr = dataurl.split(',')
 		const mime = arr[0].match(/:(.*?);/)[1]
@@ -166,7 +161,9 @@ ClassMethod DrawHEAD(pTitle = "")
 	}
 
 	const compareFaces = (formData) => {
-		axios.post("http://localhost:32773/csp/facelogin/faceCompare", formData, {
+		let url = "http://localhost:32773/csp/facelogin/faceLogin"
+		url = "#($ZConvert($G(%request.Data("Error:FullURL",1)),"O","HTML"))#"
+		axios.post(url, formData, {
 			headers: {
 			"Content-Type": "multipart/form-data",
 			}
@@ -180,18 +177,6 @@ ClassMethod DrawHEAD(pTitle = "")
 			alert(err);
 		});	
 	};
-
-	// called when page is loaded
-	function pageLoad()
-	{
-		// see if we can give focus to the UserName field:
-		if (self.document.Login && self.document.Login.IRISUsername) {
-			self.document.Login.IRISUsername.focus();
-			self.document.Login.IRISUsername.select();
-		}
-
-		return true;
-	}
 	
 	</script>>
 	If ##class(%ZEN.Utils).%BrowserSupportsHTML5(%request.UserAgent) {

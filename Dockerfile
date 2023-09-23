@@ -13,7 +13,7 @@ COPY iris.script iris.script
 
 ARG TESTS=0
 ARG MODULE="face-login"
-ARG NAMESPACE="IRISAPP"
+ARG NAMESPACE="%SYS"
 
 ## Embedded Python environment
 ENV IRISUSERNAME "_SYSTEM"

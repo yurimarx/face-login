@@ -17,11 +17,11 @@ ClassMethod PostFace() As %Status
 
     Try {
         Set info = {}
-        
         Set username = $GET(%request.Data("username",1))
         Set password = $GET(%request.Data("password",1))
 
         Set success = $SYSTEM.Security.Login(username,password)
+        Set info.log = "user"_success
 
         If (success = 1) {
             Set source = %request.GetMimeData("file")
@@ -31,7 +31,9 @@ ClassMethod PostFace() As %Status
                 Set binary=$system.Encryption.Base64Decode(b64)
                 Set source = ##class(%Stream.GlobalBinary).%New()
                 Do source.Write(binary)
-            }
+            } 
+
+            Set info.log = "antes select"
 
             Set sql = "SELECT * FROM dc_facelogin.Face WHERE username = ?"
             Set tStatement = ##class(%SQL.Statement).%New()
@@ -107,6 +109,7 @@ ClassMethod FaceCompare() As %Status
 ClassMethod LoginByFace() As %Status
 {
     
+    set success = $$$OK
     Set info = {}
     Set source = %request.GetMimeData("file")
     If (source = "") {
@@ -122,16 +125,17 @@ ClassMethod LoginByFace() As %Status
     Set success = tStatement.%Prepare(sql)
     If success'= 1 { Write "%Prepare failed:" Do $System.Status.DisplayError(success) Quit }
     Set rset = tStatement.%Execute($GET(%request.Data("username",1)))
-    Do rset.%Next()
+    set success = rset.%Next()
+    Set face = ##class(dc.facelogin.Face).%OpenId(rset.ID)  
     
-    Set sourceFile = SaveStreamAsTempFile(source, "png")
-    Set targetFile = SaveStreamAsTempFile(rset.face, "png")
+    Set sourceFile = ..SaveStreamAsTempFile(source, "png")
+    Set targetFile = ..SaveStreamAsTempFile(face.face, "png")
     
-    Set faceComparationResult = CompareFaces(sourceFile, targetFile)
+    Set faceComparationResult = ..CompareFaces(sourceFile, targetFile)
 
     Set info.result = faceComparationResult
+    Write info.%ToJSON()
     
-    set success = $$$OK
     Quit success
 }
 

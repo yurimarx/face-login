@@ -21,7 +21,8 @@
       <CSPApplication 
         Url="/csp/facelogin"
         Recurse="1"
-        MatchRoles=":{$dbrole}"
+        AuthenticationMethods="64"
+        MatchRoles=":{$dbrole}:%All"
         PasswordAuthEnabled="1"
         UnauthenticatedEnabled="1"
         DispatchClass="dc.facelogin.FaceLoginAPI"

@@ -17,8 +17,8 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Links',
                 items: [
-                    { label: 'Face Compare', icon: 'pi pi-fw pi-home', routerLink: ['/facecompare'] },
-                    { label: 'Face Compare', icon: 'pi pi-fw pi-home', routerLink: ['/postface'] }
+                    { label: 'Face Compare', icon: 'pi pi-fw pi-users', routerLink: ['/facecompare'] },
+                    { label: 'Post IRIS Face', icon: 'pi pi-fw pi-user-plus', routerLink: ['/postface'] }
                 ]
             }
         ];

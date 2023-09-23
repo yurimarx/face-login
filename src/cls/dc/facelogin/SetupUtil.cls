@@ -18,7 +18,9 @@ ClassMethod Apply(app = "/csp/sys", user = "", pass = "", mode = "0")
 		}
 		Set tempFile = ##class(%File).TempFilename("xml")
 		Set list("ZAUTHENTICATE.MAC")=""
+		Set list("dc.facelogin.Face.CLS")=""
 		Set list("dc.facelogin.FaceLogin.CLS")=""
+		Set list("dc.facelogin.FaceLoginAPI.CLS")=""
 		Set list("dc.facelogin.SetupUtil.CLS")=""
 		Set st=$SYSTEM.OBJ.Export(.list, tempFile)
 		Set $NAMESPACE="%SYS"
